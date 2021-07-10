@@ -5,7 +5,7 @@ const db = connection.promise();
 
 // GET /users
 router.get("/", (req, res) => {
-  db.query("SELECT * FROM users")
+  db.query("SELECT * FROM users ORDER BY high_score DESC")
     .then(([allUsers]) => res.status(200).json(allUsers))
     .catch((err) => res.status(500).json(err));
 });
