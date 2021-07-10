@@ -13,7 +13,7 @@ router.post("/", (req, res) => {
 
       return db.query("SELECT * FROM users WHERE id = ?", [newUserId]);
     })
-    .then(([newUser]) => res.status(200).json(newUser))
+    .then(([newUser]) => res.status(200).json(newUser[0]))
     .catch((err) => res.status(500).json(err));
 });
 
