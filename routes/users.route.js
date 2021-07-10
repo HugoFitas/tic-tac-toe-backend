@@ -24,4 +24,32 @@ router.post("/", (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
+// PUT /users/:id
+router.put("/:id", (req, res) => {
+  const userId = req.params.id;
+  const userInfo = req.body;
+
+  let userToBeUpdated = null;
+
+  db.query("SELECT * FROM users WHERE id = ?", [userId])
+    .then(([result]) => {
+      userToBeUpdated = result[0];
+      if (!userToBeUpdated) return Promise.reject("RECORD_NOT_FOUND");
+
+      return db.query("UPDATE users SET ? WHERE id = ?", [userInfo, userId]);
+    })
+    .then(() => {
+      const updatedUser = { ...userToBeUpdated, ...userInfo };
+
+      res.status(200).json(updatedUser);
+    })
+    .catch((err) => {
+      if (err === "RECORD_NOT_FOUND")
+        res
+          .status(404)
+          .json({ errorMessage: `User with id ${userId} not found` });
+      else res.status(500).json(err);
+    });
+});
+
 module.exports = router;
